@@ -23,6 +23,7 @@ export const DEFAULT_CATEGORIES: Category[] = [
   // Adicionadas recentemente
   { id: '17', name: 'Lava Jato', color: '#0EA5E9', icon: 'droplets' }, // Sky Blue
   { id: '18', name: 'Serviços', color: '#64748B', icon: 'briefcase' }, // Slate
+  { id: '19', name: 'Viagem', color: '#14B8A6', icon: 'plane' }, // Teal
 ];
 
 export const MV_FRIOS_CATEGORIES: Category[] = [

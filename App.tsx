@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   Home, PieChart as ChartIcon, Settings, Plus, X, 
@@ -12,6 +13,15 @@ import ChartsView from './components/ChartsView';
 import CategoryManager from './components/CategoryManager';
 import HistoryView from './components/HistoryView';
 import CategoryIcon from './components/CategoryIcon';
+
+// Helper to get local date string YYYY-MM-DD
+const getTodayDateString = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
 function App() {
   // --- Global State ---
@@ -37,14 +47,25 @@ function App() {
         budgets = { ...budgets, personal: parsed.monthlyBudget };
       }
 
+      // Migration for names (Individual per scope)
+      let names = parsed.names;
+      if (!names) {
+        names = {
+          personal: parsed.name || 'Usuário',
+          business: parsed.name || 'MV Frios'
+        };
+      }
+
       return { 
         ...parsed, 
         autoSync: parsed.autoSync !== undefined ? parsed.autoSync : true,
-        monthlyBudgets: budgets
+        monthlyBudgets: budgets,
+        names: names
       };
     }
     return { 
       name: 'Usuário', 
+      names: { personal: 'Usuário', business: 'MV Frios' },
       theme: 'light', 
       autoSync: true,
       monthlyBudgets: { personal: 0, business: 0 }
@@ -82,7 +103,7 @@ function App() {
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [categoryId, setCategoryId] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(getTodayDateString());
   const [receiptImage, setReceiptImage] = useState<string | undefined>(undefined);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -299,7 +320,7 @@ function App() {
     setAmount('');
     setDescription('');
     setCategoryId('');
-    setDate(new Date().toISOString().split('T')[0]);
+    setDate(getTodayDateString());
     setReceiptImage(undefined);
   };
 
@@ -315,7 +336,7 @@ function App() {
                    <Wallet size={20} />
                  </div>
               </div>
-              Olá, {userSettings.name}
+              Olá, {userSettings.names?.[currentScope] || userSettings.name}
             </h1>
             <p className="text-slate-600 dark:text-slate-400 text-xs font-medium uppercase tracking-wide ml-1">
               {currentScope === 'business' ? 'Controle Empresarial' : 'Finanças Pessoais'}

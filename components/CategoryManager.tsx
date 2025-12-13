@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { Category, UserSettings, Scope } from '../types';
 import { COLORS, formatCurrency } from '../constants';
@@ -127,12 +128,20 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
         {activeTab === 'profile' && (
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Seu Nome</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                Nome de Exibição ({currentScope === 'business' ? 'Empresarial' : 'Pessoal'})
+              </label>
               <div className="flex gap-2">
                 <input 
                   type="text"
-                  value={userSettings.name}
-                  onChange={(e) => setUserSettings({...userSettings, name: e.target.value})}
+                  value={userSettings.names?.[currentScope] || userSettings.name}
+                  onChange={(e) => {
+                      const newNames = {
+                          ...(userSettings.names || { personal: userSettings.name, business: userSettings.name }),
+                          [currentScope]: e.target.value
+                      };
+                      setUserSettings({...userSettings, names: newNames});
+                  }}
                   className="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-white"
                 />
               </div>

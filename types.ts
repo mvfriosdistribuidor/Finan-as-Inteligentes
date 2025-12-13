@@ -1,3 +1,4 @@
+
 export interface Category {
   id: string;
   name: string;
@@ -30,7 +31,11 @@ export interface SmartParseResult {
 export type Theme = 'light' | 'dark';
 
 export interface UserSettings {
-  name: string;
+  name: string; // Mantido para retrocompatibilidade
+  names?: {
+    personal: string;
+    business: string;
+  };
   theme: Theme;
   autoSync?: boolean;
   lastSyncedAt?: number;
